@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+
+
+  <head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+<style>
+.boxed {
+    overflow: scroll;
+padding: 5px 10px;
+border: 1px solid black ;
+
+}
+</style>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+    <title>MVP Deployment</title>
+
+  </head>
+
+  <body >
+  <H3 ALIGN='CENTER'>Build Details</H3>
+    <H4 ALIGN='CENTER'>Circleci link</H4>
+   <CENTER> <a href="{{ build_info_item.circleci_url }}">{{ build_info_item.circleci_url }}</a></CENTER>
+
+    <H4 ALIGN='CENTER'>Committed By</H4>
+   <CENTER>{{ build_info_item.commitor }}</CENTER>
+
+    <H4 ALIGN='CENTER'>Branch</H4>
+   <CENTER> {{ build_info_item.branch }}</CENTER>
+    </br>
+    </br>
+<div class="row">
+  <div class="col-md-12" >
+      <div class="panel panel-default" >
+                {% for list_item in serverbuildinfo_list %}
+              <div class="row">
+  <div class="col-md-12" >
+      <div class="panel panel-default"  style = "margin:4; padding:4">
+                            <table class="table">
+                              <tr>
+                                <th>Ip</th>
+                                <th>Server Type</th>
+                                <th>Process Return Boolean</th>
+                              </tr>
+                              <tr>
+                <td>
+                {{ list_item.ip }}</td>
+
+                <td>
+                {{ list_item.server_type }}</td>
+
+               <td>
+                {{ list_item.is_success }}</td>
+                </tr>
+                </table>
+                </div>
+                </div>
+                </div>
+
+                <H3 ALIGN='CENTER'>Console Output</H3>
+              <div><pre style="background:black;color:white;"> <code> {{ list_item.console_output }} </code></pre>
+</div>
+</br>
+                {% endfor %}
+
+    </div>
+
+    </div>
+    </div>
+
+    </body>
+
+</html>
