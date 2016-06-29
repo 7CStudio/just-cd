@@ -20,7 +20,6 @@ class BuildInfo(models.Model):
 
 class ServerBuildInfo(models.Model):
     ip = models.GenericIPAddressField()
-    server_type = models.CharField(max_length=255)
     is_success = models.BooleanField(default=False)
     console_output = models.TextField()
     build_info = models.ForeignKey(BuildInfo)
