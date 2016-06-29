@@ -107,7 +107,7 @@ def git_pull(reponame, branch, vcs_revision):
 def git_clone(vcs_url):
     repo_path = vcs_url.replace('https://github.com/', '', 1)
     process_output = subprocess.check_output(
-        ['yes', '|', 'yes', 'git', 'clone', 'git@github.com:' + repo_path],
+        ['yes', 'yes', '|', 'git', 'clone', 'git@github.com:' + repo_path],
         stdin=subprocess.PIPE)
     print(process_output)
 
