@@ -13,6 +13,13 @@ import os
 @api_view(['POST'])
 def deploy_view(request):
     if request.data['payload']['outcome'] == 'success':
+        build_info_obj = BuildInfo(
+            circleci_json=request.data,
+            branch=request.data['payload']['branch'],
+            commiter=request.data['payload']['author_name'],
+            circleci_url=request.data['payload']['build_url'],
+            vcs_revision=request.data['payload']['vcs_revision'])
+        build_info_obj.save()
         if (check_if_repo_exists(request.data['payload']['reponame'])):
             print('repository exists')
             git_pull(request.data['payload']['reponame'],
@@ -31,7 +38,17 @@ def deploy_view(request):
                 user = branch_dict['user']
                 pem_path = branch_dict.get('pem_path', '')
                 for ip in ip_addresses:
-                    ssh_to_ip(pem_path, ip, deployment_script_path, user)
+                    try:
+                        console_output = ssh_to_ip(pem_path, ip,
+                                                   deployment_script_path,
+                                                   user)
+                        process_status(
+                            request, console_output, 0, ip,
+                            build_info_obj)
+                    except subprocess.CalledProcessError as e:
+                        process_status(
+                            request, e.output, 1, ip,
+                            build_info_obj)
             else:
                 continue
     return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -54,14 +71,13 @@ def build_detail_view(request, id):
 
 def process_status(
         request, process_output, process_status,
-        ip, server_type, build_info_obj):
+        ip, build_info_obj):
     print(process_output)
     if process_status == 0:
         build_info_item = ServerBuildInfo(
             is_success=True,
             console_output=process_output,
             ip=ip,
-            server_type=server_type,
             build_info=build_info_obj)
         build_info_obj.deployment_status = True
         build_info_obj.save()
@@ -71,7 +87,6 @@ def process_status(
             is_success=False,
             console_output=process_output,
             ip=ip,
-            server_type=server_type,
             build_info=build_info_obj)
         build_info_obj.deployment_status = False
         build_info_obj.save()
@@ -79,8 +94,6 @@ def process_status(
 
 
 def check_if_repo_exists(reponame):
-    print(os.path.join(os.getcwd(), reponame))
-    print(os.path.isdir(os.path.join(os.getcwd(), reponame)))
     return os.path.isdir(os.path.join(os.getcwd(), reponame))
 
 
@@ -94,7 +107,7 @@ def git_pull(reponame, branch, vcs_revision):
 def git_clone(vcs_url):
     repo_path = vcs_url.replace('https://github.com/', '', 1)
     process_output = subprocess.check_output(
-        ['yes', '|', 'yes', 'git', 'clone', 'git@github.com:' + repo_path],
+        ['yes', 'yes', '|', 'git', 'clone', 'git@github.com:' + repo_path],
         stdin=subprocess.PIPE)
     print(process_output)
 
