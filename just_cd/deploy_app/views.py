@@ -116,7 +116,7 @@ def ssh_to_ip(pem_path, ip_addr, deployment_script_path, user):
                                                  pem_path, ip_addr,
                                                  deployment_script_path],
                                                  stdin=subprocess.PIPE)
-        print(process_output)
+        return(process_output)
     else:
         ssh_ip_with_user = user + '@' + ip_addr
         print(ssh_ip_with_user)
@@ -124,4 +124,4 @@ def ssh_to_ip(pem_path, ip_addr, deployment_script_path, user):
                                                  ssh_ip_with_user,
                                                  deployment_script_path],
                                                  stdin=subprocess.PIPE)
-        print(process_output)
+        return(process_output)
