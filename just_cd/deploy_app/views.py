@@ -8,6 +8,7 @@ from django.shortcuts import render_to_response
 import yaml
 from django.shortcuts import get_object_or_404
 import os
+from django.conf import settings
 
 
 @api_view(['POST'])
@@ -28,6 +29,8 @@ def deploy_view(request):
         else:
             git_clone(request.data['payload']['vcs_url'])
         config_dict = open_just_config(request.data['payload']['reponame'])
+        if (config_dict == ''):
+            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         allowed_branches = config_dict['Deploy'].keys()
         for branch in allowed_branches:
             if (request.data['payload']['branch'] == branch):
@@ -35,7 +38,7 @@ def deploy_view(request):
                 branch_dict = config_dict['Deploy'][branch]
                 deployment_script_path = branch_dict['deployment_script_path']
                 ip_addresses = branch_dict['ip_addresses']
-                user = branch_dict['user']
+                user = branch_dict.get('user', '')
                 pem_path = branch_dict.get('pem_path', '')
                 for ip in ip_addresses:
                     try:
@@ -49,9 +52,7 @@ def deploy_view(request):
                         process_status(
                             request, e.output, 1, ip,
                             build_info_obj)
-            else:
-                continue
-    return Response(status=status.HTTP_400_BAD_REQUEST)
+    return Response(status=status.HTTP_200_OK)
 
 
 def build_list_view(request):
@@ -69,10 +70,8 @@ def build_detail_view(request, id):
          'serverbuildinfo_list': serverbuildinfo_list})
 
 
-def process_status(
-        request, process_output, process_status,
-        ip, build_info_obj):
-    print(process_output)
+def process_status(process_output, process_status,
+                   ip, build_info_obj):
     if process_status == 0:
         build_info_item = ServerBuildInfo(
             is_success=True,
@@ -94,14 +93,14 @@ def process_status(
 
 
 def check_if_repo_exists(reponame):
-    return os.path.isdir(os.path.join(os.getcwd(), reponame))
+    return os.path.isdir(os.path.join(settings.BASE_DIR, reponame))
 
 
 def git_pull(reponame, branch, vcs_revision):
     process_output = subprocess.check_output(
         ['bash', 'pull_branch_commit.sh', reponame, branch, vcs_revision],
         stdin=subprocess.PIPE)
-    print(process_output)
+    return process_output
 
 
 def git_clone(vcs_url):
@@ -109,18 +108,21 @@ def git_clone(vcs_url):
     process_output = subprocess.check_output(
         ['yes', 'yes', '|', 'git', 'clone', 'git@github.com:' + repo_path],
         stdin=subprocess.PIPE)
-    print(process_output)
+    return process_output
 
 
 def open_just_config(reponame):
-    if (os.path.isfile(os.path.join(os.getcwd(),
+    if (os.path.isfile(os.path.join(settings.BASE_DIR,
                                     reponame, 'just_config.yml'))):
-        file_path = os.path.join(os.getcwd(), reponame, 'just_config.yml')
+        file_path = os.path.join(settings.BASE_DIR,
+                                 reponame, 'just_config.yml')
         with open(file_path, 'r') as stream:
             try:
                 return yaml.load(stream)
             except yaml.YAMLError as exc:
-                print(exc)
+                return exc
+    else:
+        return ''
 
 
 def ssh_to_ip(pem_path, ip_addr, deployment_script_path, user):
