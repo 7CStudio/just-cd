@@ -113,9 +113,9 @@ def git_clone(vcs_url):
 
 def open_just_config(reponame):
     if (os.path.isfile(os.path.join(settings.BASE_DIR,
-                                    reponame, 'just_config.yml'))):
+                                    reponame, 'just_config.yaml'))):
         file_path = os.path.join(settings.BASE_DIR,
-                                 reponame, 'just_config.yml')
+                                 reponame, 'just_config.yaml')
         with open(file_path, 'r') as stream:
             try:
                 return yaml.load(stream)

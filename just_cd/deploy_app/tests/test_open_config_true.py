@@ -10,19 +10,20 @@ import shutil
 import yaml
 
 
-class OpenConfigInvalidTestCase(TestCase):
+class OpenConfigValidTestCase(TestCase):
     def setUp(self):
         path = os.path.join(settings.BASE_DIR, 'test_repo')
         if not os.path.isdir(path):
             os.mkdir(path)
-        d = {'incorrect': 'test'}
+        d = {'Deploy': 'test'}
         with open(os.path.join(settings.BASE_DIR, 'test_repo',
                   'just_config.yaml'), 'w') as yaml_file:
             yaml_file.write(yaml.dump(d, default_flow_style=False))
 
-    def test_open_config_file_incorrect(self):
+    def test_open_config_file_correct(self):
         result = open_just_config('test_repo')
-        assert ('Deploy' not in result)
+        print(result)
+        assert ('Deploy' in result)
 
     def tearDown(self):
         path = os.path.join(settings.BASE_DIR, 'test_repo')
