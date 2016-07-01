@@ -1,4 +1,5 @@
 # Just-CD
+[![CircleCI](https://circleci.com/gh/7CStudio/just-cd/tree/master.svg?style=svg)](https://circleci.com/gh/7CStudio/just-cd/tree/master)
 > Bare Bones continous deployment using circleci and Django
 
 Just-CD lets you quickly set up Continous Integration and Deployment using CircleCi and Django.
