@@ -35,7 +35,6 @@ def git_pull(reponame, branch, vcs_revision):
     process_output = subprocess.check_output(
         ['bash', 'pull_branch_commit.sh', reponame, branch, vcs_revision],
         stdin=subprocess.PIPE)
-    print(process_output)
 
 
 def git_clone(vcs_url):
@@ -43,7 +42,6 @@ def git_clone(vcs_url):
     process_output = subprocess.check_output(
         ['bash', 'clone_code.sh', 'git@github.com:' + repo_path +'.git'],
         stdin=subprocess.PIPE)
-    print(process_output)
 
 
 def open_just_config(reponame):
@@ -102,15 +100,15 @@ def deploy_build(request, config_dict, allowed_branches):
             ip_addresses = branch_dict['ip_addresses']
             user = branch_dict.get('user', '')
             pem_path = branch_dict.get('pem_path', '')
-                for ip in ip_addresses:
-                    try:
-                        console_output = ssh_to_ip(pem_path, ip,
-                                                   deployment_script_path,
-                                                   user)
-                        process_status(
+            for ip in ip_addresses:
+                try:
+                    console_output = ssh_to_ip(pem_path, ip,
+                                               deployment_script_path,
+                                               user)
+                    process_status(
                             request, console_output, 0, ip,
                             build_info_obj)
-                    except subprocess.CalledProcessError as e:
-                        process_status(
+                except subprocess.CalledProcessError as e:
+                    process_status(
                             request, e.output, 1, ip,
                             build_info_obj)
