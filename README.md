@@ -36,7 +36,7 @@ https://circleci.com/docs/configuration/#notify
 
 ## Meta
 
-Manas Dadheech– [@MyFacebook](https://facebook.com/manas.dadheech) – manas@7cstudio.com
+www.7cstudio.com
 
 Distributed under the MIT license. See ``LICENSE.md`` for more information.
 
