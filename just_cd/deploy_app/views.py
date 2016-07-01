@@ -29,7 +29,7 @@ def deploy_view(request):
         else:
             git_clone(request.data['payload']['vcs_url'])
         config_dict = open_just_config(request.data['payload']['reponame'])
-        if (config_dict == ''):
+        if (config_dict == 'None'):
             return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         allowed_branches = config_dict['Deploy'].keys()
         for branch in allowed_branches:
@@ -121,8 +121,6 @@ def open_just_config(reponame):
                 return yaml.load(stream)
             except yaml.YAMLError as exc:
                 return exc
-    else:
-        return ''
 
 
 def ssh_to_ip(pem_path, ip_addr, deployment_script_path, user):

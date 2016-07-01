@@ -26,7 +26,4 @@ class OpenConfigInvalidTestCase(TestCase):
 
     def tearDown(self):
         path = os.path.join(settings.BASE_DIR, 'test_repo')
-        # os.remove(os.path.join(settings.BASE_DIR,
-        #           'test_repo', 'just_config.yaml'))
-        # os.rmdir(path)
         shutil.rmtree(path)
