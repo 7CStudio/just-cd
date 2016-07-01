@@ -1,5 +1,5 @@
 # Just-CD
-> Bare Bones continous deployment for projects using circleci and Django
+> Bare Bones continous deployment using circleci and Django
 
 Just-CD lets you quickly set up Continous Integration and Deployment using CircleCi and Django.
 All you have to do is deploy this on one of your servers and set up circleci.

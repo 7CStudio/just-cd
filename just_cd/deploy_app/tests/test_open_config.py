@@ -3,7 +3,7 @@ from django.test import TestCase
 # Create your tests here.
 
 
-from just_cd.deploy_app.views import open_just_config
+from just_cd.deploy_app.deploy_manager import open_just_config
 import os
 from django.conf import settings
 import shutil

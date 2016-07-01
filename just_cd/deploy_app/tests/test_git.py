@@ -5,7 +5,7 @@ from django.test import TestCase
 
 from django.test import TestCase
 from mock import MagicMock, patch
-from just_cd.deploy_app.views import git_pull, git_clone
+from just_cd.deploy_app.deploy_manager import git_pull, git_clone
 import subprocess
 
 

@@ -5,7 +5,7 @@ from django.test import TestCase
 
 from django.test import TestCase
 from mock import MagicMock, patch
-from just_cd.deploy_app.views import ssh_to_ip
+from just_cd.deploy_app.deploy_manager import ssh_to_ip
 import subprocess
 
 

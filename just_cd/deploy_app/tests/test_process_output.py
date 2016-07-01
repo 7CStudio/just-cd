@@ -3,7 +3,7 @@ from django.test import TestCase
 # Create your tests here.
 
 
-from just_cd.deploy_app.views import process_status
+from just_cd.deploy_app.deploy_manager import process_status
 from just_cd.deploy_app.models import (BuildInfo,
                                        ServerBuildInfo)
 
