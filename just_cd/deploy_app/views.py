@@ -14,7 +14,6 @@ from just_cd.deploy_app.deploy_manager import *
 
 @api_view(['POST'])
 def deploy_view(request):
-    print('in deploy view')
     if request.data['payload']['outcome'] == 'success':
         build_info_obj = save_build_object(request)
         clone_or_pull_repo(request)

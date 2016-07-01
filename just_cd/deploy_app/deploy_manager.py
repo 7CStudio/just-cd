@@ -28,12 +28,10 @@ def process_status(process_output, process_status,
 
 
 def check_if_repo_exists(reponame):
-    print('in check_if_repo_exists')
     return os.path.isdir(os.path.join(settings.BASE_DIR, reponame))
 
 
 def git_pull(reponame, branch, vcs_revision):
-    print('in git_pull')
     process_output = subprocess.check_output(
         ['bash', 'pull_branch_commit.sh', reponame, branch, vcs_revision],
         stdin=subprocess.PIPE)
@@ -41,7 +39,6 @@ def git_pull(reponame, branch, vcs_revision):
 
 
 def git_clone(vcs_url):
-    print('in git_clone')
     repo_path = vcs_url.replace('https://github.com/', '', 1)
     process_output = subprocess.check_output(
         ['bash', 'clone_code.sh', 'git@github.com:' + repo_path +'.git'],
@@ -50,7 +47,6 @@ def git_clone(vcs_url):
 
 
 def open_just_config(reponame):
-    print('in open_just_config')
     if (os.path.isfile(os.path.join(settings.BASE_DIR,
                                     reponame, 'just_config.yaml'))):
         file_path = os.path.join(settings.BASE_DIR,
@@ -63,7 +59,6 @@ def open_just_config(reponame):
 
 
 def ssh_to_ip(pem_path, ip_addr, deployment_script_path, user):
-    print('in ssh_to_ip')
     if (len(pem_path) > 0):
         process_output = subprocess.check_output(['bash', 'ssh_with_pem.sh',
                                                  pem_path, ip_addr,
@@ -80,7 +75,6 @@ def ssh_to_ip(pem_path, ip_addr, deployment_script_path, user):
         return(process_output)
 
 def save_build_object(request):
-    print('in save_build_object')
     build_info_obj = BuildInfo(
             circleci_json=request.data,
             branch=request.data['payload']['branch'],
@@ -91,7 +85,6 @@ def save_build_object(request):
     return build_info_obj
 
 def clone_or_pull_repo(request):
-    print('in clone_or_pull_repo')
     if (check_if_repo_exists(request.data['payload']['reponame'])):
         print('repository exists')
         git_pull(request.data['payload']['reponame'],
@@ -101,15 +94,14 @@ def clone_or_pull_repo(request):
         git_clone(request.data['payload']['vcs_url'])
 
 def deploy_build(request, config_dict, allowed_branches):
-    print('in deploy_build')
     for branch in allowed_branches:
-            if (request.data['payload']['branch'] == branch):
-                print('branch in just_config' + branch)
-                branch_dict = config_dict['Deploy'][branch]
-                deployment_script_path = branch_dict['deployment_script_path']
-                ip_addresses = branch_dict['ip_addresses']
-                user = branch_dict.get('user', '')
-                pem_path = branch_dict.get('pem_path', '')
+        if (request.data['payload']['branch'] == branch):
+            print('branch in just_config' + branch)
+            branch_dict = config_dict['Deploy'][branch]
+            deployment_script_path = branch_dict['deployment_script_path']
+            ip_addresses = branch_dict['ip_addresses']
+            user = branch_dict.get('user', '')
+            pem_path = branch_dict.get('pem_path', '')
                 for ip in ip_addresses:
                     try:
                         console_output = ssh_to_ip(pem_path, ip,
